@@ -1,0 +1,5 @@
+*.db
+dataset_raw
+.venv
+.idea
+__pycache__
