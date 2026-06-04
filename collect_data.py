@@ -5,7 +5,7 @@ import os
 import uuid
 
 # 1. Настройки
-YOUTUBE_URL = "https://www.youtube.com/watch?v=8JCk5M_xrBs"
+YOUTUBE_URL = "https://www.youtube.com/watch?v=BAw342Xqxhs&pp=ygUMY2l0eSBzdHJlZXRz"
 OUTPUT_DIR = "dataset_raw"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 

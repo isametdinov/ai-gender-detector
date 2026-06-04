@@ -3,11 +3,12 @@ from ultralytics import YOLO
 import yt_dlp
 import os
 import sqlite3
+import matplotlib.pyplot as plt
 
 # Пути к моделям и БД
 DETECTOR_PATH = "yolo11n.pt"
 CLASSIFIER_PATH = "gender_yolo11n_v2.pt"
-YOUTUBE_URL = "https://youtu.be/8gxA-5-VWI0?si=E8LoqIYzcyu4mnDP"
+YOUTUBE_URL = "https://www.youtube.com/watch?v=BAw342Xqxhs&pp=ygUMY2l0eSBzdHJlZXRz"
 DB_PATH = "cv_analytics.db"
 
 # Настройки
@@ -33,6 +34,40 @@ ydl_opts = {
 }
 
 print("Запуск системы. Нажмите 'q' для выхода.")
+
+
+def show_pie_chart(db_path: str = DB_PATH):
+    """Query the DB for male/female counts and show a pie chart."""
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT label, COUNT(*) FROM people_tracks GROUP BY label")
+        rows = cursor.fetchall()
+        conn.close()
+
+        # Prepare data
+        labels = []
+        sizes = []
+        colors = []
+        for label, count in rows:
+            labels.append(label)
+            sizes.append(count)
+            if str(label).lower() == 'male':
+                colors.append('#4f83cc')
+            else:
+                colors.append('#ff9ac6')
+
+        if not sizes:
+            print("No data in database to display.")
+            return
+
+        plt.figure(figsize=(6, 6))
+        plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors)
+        plt.title('Detected Gender Distribution')
+        plt.axis('equal')
+        plt.show()
+    except Exception as e:
+        print(f"Failed to create pie chart: {e}")
 
 while True:
     try:
@@ -80,14 +115,18 @@ while True:
                             print(f"[БАЗА ДАННЫХ] Сохранено: ID {tid} | Класс: {top1_name}")
 
                         if DRAW_BOXES:
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                            # Choose color based on gender classification
+                            color = (255, 0, 0) if top1_name.lower() == 'male' else (203, 192, 255)  # Blue for male, Pink for female
+                            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 1)
                             cv2.putText(frame, f"{top1_name} {conf:.2f}", (x1, y1 - 5), 
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
+                                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, color, 1)
 
             cv2.imshow("Main Inference", cv2.resize(frame, (960, 540)))
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 cap.release()
                 cv2.destroyAllWindows()
+                # Show pie chart of counts from DB, then exit
+                show_pie_chart(DB_PATH)
                 exit()
         cap.release()
     except Exception as e:

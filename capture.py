@@ -6,7 +6,7 @@ import os
 
 # 1. Настройки путей и линков
 MODEL_PATH = "gender_yolo11.pt"
-YOUTUBE_URL = "https://www.youtube.com/watch?v=8JCk5M_xrBs"
+YOUTUBE_URL = "https://www.youtube.com/watch?v=BAw342Xqxhs&pp=ygUMY2l0eSBzdHJlZXRz"
 DB_PATH = "cv_analytics.db"
 ROI_LIMITS = None  # Отключено, анализируем весь кадр целиком
 
