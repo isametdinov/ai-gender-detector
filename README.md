@@ -55,6 +55,7 @@ python main_inference.py
 - Update `YOUTUBE_URL` in `main_inference.py` to change the input stream.
 - Change `ROI`, `DRAW_ROI`, and `DRAW_BOXES` for bounding-box behavior.
 - The script saves detected track IDs and classification labels to `people_tracks`.
+- Press `q` to quit the stream: after quitting, the script will display a pie chart showing the count of detected `male` and `female` labels from the database.
 
 ### 2. Run webcam classification
 

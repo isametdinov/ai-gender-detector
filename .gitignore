@@ -2,4 +2,4 @@
 dataset_raw
 .venv
 .idea
-__pycache__
+__pycache__venv/
